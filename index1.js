@@ -9,6 +9,7 @@
                 console.log("An error has occured");
             };
             xhr.send();
+            console.log('cevaasdasd')
 
         // Minimum & Maximum temperature for the last day, using data.
             const xhr1 = new XMLHttpRequest();
