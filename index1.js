@@ -1,5 +1,5 @@
 //    GET the weather for the next 24 hours in Horsens
-const last24Hours = (city) => {
+const next24Hours = (city) => {
   const xhr = new XMLHttpRequest();
   xhr.open("GET", `http://localhost:8080/forecast/${city}`);
   xhr.onload = () => {
@@ -186,7 +186,7 @@ const latestMeasurements = (city) => {
 // Dropdown for choosing the city.
 const chooseCity = () => {
   var selectingCity = document.getElementById("cityDropdown").value;
-  last24Hours(selectingCity);
+  next24Hours(selectingCity);
   minAndMax(selectingCity);
   precipitationLastDay(selectingCity);
   averageWind(selectingCity);
