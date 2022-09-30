@@ -25,7 +25,7 @@ const minAndMax = (city) => {
     var minim = body1[0].value;
     var maxim = body1[0].value;
 
-    for (let i = length; i >= 0; i--) {
+    for (let i = length - 1; i >= 0; i--) {
       if (body1[i].type === "temperature") {
         if (body1[i].value < minim) {
           minim = body1[i].value;
@@ -54,7 +54,7 @@ const precipitationLastDay = (city) => {
     var summ = 0;
     const length = body2.length;
 
-    for (let i = length; i >= 0; i--) {
+    for (let i = length - 1; i >= 0; i--) {
       if (body2[i].type === "preacipitation") {
         summ = summ + body2[i].value;
       }
@@ -79,6 +79,7 @@ const averageWind = (city) => {
     let x = 0;
     let measureCount = 0;
     let dataSet = [];
+
     //24 measurements a day * 4 sets each
     while (i >= length - 96) {
       switch (body3[i].type) {
@@ -124,6 +125,64 @@ const averageWind = (city) => {
   xhr3.send();
 };
 
+//	All data for the latest measurement of each kind
+const latestMeasurements = (city) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open("GET", `http://localhost:8080/data/${city}`);
+  xhr.onload = () => {
+    const response = xhr.responseText;
+    const body = JSON.parse(response);
+    const length = body.length;
+    let i = length - 1;
+    let x = 0;
+    let measureCount = 0;
+    let dataSet = [];
+
+    while (i >= length - 4) {
+      switch (body[i].type) {
+        case "temperature":
+          dataSet[x] = { ...dataSet[x], temperature: body[i] };
+          measureCount++;
+          break;
+        case "wind speed":
+          dataSet[x] = { ...dataSet[x], wind: body[i] };
+          measureCount++;
+          break;
+
+        case "precipitation":
+          dataSet[x] = { ...dataSet[x], precipitation: body[i] };
+          measureCount++;
+          break;
+
+        case "cloud coverage":
+          dataSet[x] = { ...dataSet[x], cloud: body[i] };
+          measureCount++;
+          break;
+      }
+
+      if (measureCount == 4) {
+        x++;
+        measureCount = 0;
+      }
+      i--;
+    }
+
+    //latest measurements of each kind
+    const latest = dataSet[dataSet.length - 1];
+
+    document.getElementById(
+      "latestMeasurementsOfEachKind"
+    ).value = `${latest.wind.value} 
+      ${latest.temperature.value} 
+      ${latest.precipitation.value} 
+      ${latest.cloud.value}`;
+  };
+  xhr.onerror = () => {
+    console.log("An error has occured");
+  };
+  xhr.send();
+};
+
 // Dropdown for choosing the city.
 const chooseCity = () => {
   var selectingCity = document.getElementById("cityDropdown").value;
@@ -131,4 +190,5 @@ const chooseCity = () => {
   minAndMax(selectingCity);
   precipitationLastDay(selectingCity);
   averageWind(selectingCity);
+  latestMeasurements(selectingCity);
 };
