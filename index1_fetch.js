@@ -6,11 +6,12 @@ const next24Hours = (city) => {
       "Content-Type": "application/json",
     },
   })
-    .then((res) => (res.ok ? res : Promise.reject(res.statusText)))
+    .then((res) => (res.ok ? res : Promise.reject(res)))
     .then((res) => res.json())
     .then((body) => {
       var textArea = document.getElementById("next24HoursOfWeather");
-      textArea.value = body;
+      jsonData = JSON.stringify(body, null, 3);
+      textArea.value = jsonData;
     })
     .catch((error) => console.log(error));
 };
