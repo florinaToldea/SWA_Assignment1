@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "init.js",
-  "dependencies": {
-  },
+  "dependencies": {},
   "scripts": {
     "test": "jest"
   },

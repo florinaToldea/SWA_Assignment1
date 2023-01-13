@@ -39,7 +39,7 @@ export class Board<T> {
   pieces: Piece<T>[] = [];
   enabeledEvents: boolean = false;
 
-  constructor(columns: number, rows: number, generator: Generator<T>) {
+  constructor(generator: Generator<T>, columns: number, rows: number) {
     this.width = columns;
     this.height = rows;
     this.generator = generator;
@@ -64,7 +64,7 @@ export class Board<T> {
     if (this.able_To_Move(first, second)) {
       this.enabeledEvents = true;
       this.swapPieces(first, second);
-      this.boardScan();
+      this.scanBoard();
       this.enabeledEvents = false;
     }
     return null;
@@ -222,6 +222,12 @@ export class Board<T> {
       const nextPiece = this.find_Piece_On_Given_Position(
         this.find_Next_Piece_On_Given_Position(chosenPiece, checkDirection)
       );
+      this.neighbour_Value_Check(
+        nextPiece,
+        matchingPiece,
+        value,
+        checkDirection
+      );
     }
     return matchingPiece;
   }
@@ -351,13 +357,13 @@ export class Board<T> {
   }
 
   /* Method for scanning the board for matches. */
-  boardScan() {
+  scanBoard() {
     const rowMatches = this.get_All_Matches_Row();
     const columnMatches = this.get_All_Matches_Column();
 
     if (columnMatches.length || rowMatches.length) {
       this.matched_Values_Removal(rowMatches, columnMatches);
-      this.refillBoard();
+      this.initBoardFill();
     }
   }
 
@@ -417,7 +423,7 @@ export class Board<T> {
   /* Method for scanning the board again to see if new matches appear (Recursion).
    * It calls a refill event and goes from left to right row by row.
    * When the empty piece is found it shifts all pieces above and put a new one on the top of the column. */
-  refillBoard(): void {
+  initBoardFill(): void {
     this.listeners.forEach((listener) => {
       listener({
         kind: `Refill`,
@@ -439,7 +445,7 @@ export class Board<T> {
         }
       }
     }
-    this.boardScan();
+    this.scanBoard();
   }
 
   /* Method for interchanging elements one by one in the chosen column from bottom to top until the end of the board, starting from the given row. */
