@@ -3,7 +3,7 @@
 const data = {};
 const forecast = {};
 
-fetch(`http://localhost:8080/data/${city}`)
+await fetch(`http://localhost:8080/data/${city}`)
   .then((response) => {
     data = response.json();
   })
@@ -11,7 +11,7 @@ fetch(`http://localhost:8080/data/${city}`)
     console.log(error);
   });
 
-fetch(`http://localhost:8080/forecast/${city}`)
+await fetch(`http://localhost:8080/forecast/${city}`)
   .then((response) => {
     forecast = response.json();
   })
